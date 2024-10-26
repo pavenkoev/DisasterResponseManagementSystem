@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 19, 2024 at 12:44 AM
+-- Generation Time: Oct 26, 2024 at 04:53 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,7 +40,19 @@ CREATE TABLE `incidents` (
 
 INSERT INTO `incidents` (`id`, `location`, `radius`, `incident_type`) VALUES
 (1, 0x000000000101000000713d0ad7a3c049400ad7a3703d0ab7bf, 20, 1),
-(2, 0x0000000001010000003d0ad7a370cd494052b81e85eb51c8bf, 30, 2);
+(2, 0x0000000001010000003d0ad7a370cd494052b81e85eb51c8bf, 30, 2),
+(3, 0x000000000101000000363ffed2a23e4740b77efacf9a8b5ec0, 15, 2),
+(4, 0x0000000001010000003be466b801b543408d7e349c329a5bc0, 25, 15),
+(25, 0x0000000001010000003735d07cce8f4440c0417bf5f1f457c0, 30, 13),
+(26, 0x0000000001010000006d003620422840405951836918f054c0, 10, 2),
+(27, 0x00000000010100000074d4d171354c41403d0b42791f5254c0, 15, 3),
+(28, 0x0000000001010000002dd159661130444038f7578ffb095fc0, 25, 5),
+(29, 0x000000000101000000a1bab9f8dbd04240bfb9bf7adc9f5dc0, 30, 1),
+(30, 0x000000000101000000b1f9b83654a043401c96067e54045ac0, 10, 14),
+(31, 0x000000000101000000f450db8651f845401f300f99f29752c0, 25, 15),
+(32, 0x000000000101000000e6eb32fca77b4a400f2a711de3bc5bc0, 20, 7),
+(33, 0x0000000001010000009fca694fc9534840c4d2c08f6aa253c0, 35, 12),
+(34, 0x000000000101000000d3bd4eeacb86354059c4b0c398bf63c0, 10, 11);
 
 -- --------------------------------------------------------
 
@@ -72,7 +84,15 @@ CREATE TABLE `incident_type` (
 
 INSERT INTO `incident_type` (`id`, `name`, `color`, `icon`) VALUES
 (1, 'Earthquake', '#b57f59', 'Icon'),
-(2, 'Fire', '#fb2e2e', 'Icon');
+(2, 'Fire', '#fb2e2e', 'Icon'),
+(3, 'Hurricane', '#808080', 'Icon'),
+(5, 'Flood', '#0000ff', 'Icon'),
+(7, 'Tornado', '#000000', 'Icon'),
+(11, 'Volcanic Eruption', '#ffa500', 'Icon'),
+(12, 'Land Slide', '#06402b', 'Icon'),
+(13, 'Heat Wave', '#ffff00', 'Icon'),
+(14, 'Drought', '#f5f5dc', 'Icon'),
+(15, 'Alien Invasion', '#32cd32', 'Icon');
 
 -- --------------------------------------------------------
 
@@ -85,6 +105,13 @@ CREATE TABLE `incident_type_resources` (
   `resource_type` int(11) NOT NULL,
   `quantity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `incident_type_resources`
+--
+
+INSERT INTO `incident_type_resources` (`incident_type`, `resource_type`, `quantity`) VALUES
+(1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -114,6 +141,22 @@ CREATE TABLE `resource_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
+-- Dumping data for table `resource_type`
+--
+
+INSERT INTO `resource_type` (`id`, `name`, `color`, `icon`, `description`) VALUES
+(1, 'Hospital', '#ffffff\r\n', 'Icon', 'Medical and surgical treatment.'),
+(2, 'Firefighters', '#ff0000', 'Icon', 'Trained to control fires, conduct rescues, and protect structures.'),
+(4, 'Search and Rescue Team', '#ffff00', 'Icon', 'Equipped for locating and rescuing trapped individuals.'),
+(5, 'Power Supply Resources', '#06402b', 'Icon', 'Maintain electricity and fuel for essential operations.'),
+(8, 'Water Rescue Team', '#0000ff', 'Icon', 'For rescuing stranded individuals.'),
+(11, 'Scientific Research and Analysis Team', '#00008b', 'Icon', 'Study alien technology and biology to better understand the threat and potentially adapt or counter it.'),
+(12, 'Food and Water Distribution Center', '#008080', 'Icon', 'Supply affected individuals with food and clean drinking water.'),
+(13, 'Emergency Shelter', '#add8e6', 'Icon', 'Provide temporary housing for individuals displaced by disasters.'),
+(14, 'Biohazard and Containment Team', '#39ff14', 'Icon', 'Protect against potential alien pathogens or biological hazards that could threaten humans.'),
+(15, 'Animal Rescue and Veterinary Service', '#06402b', 'Icon', 'Rescue and care for pets and livestock affected by disasters.');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -122,7 +165,14 @@ CREATE TABLE `resource_type` (
 --
 ALTER TABLE `incidents`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `incident-type-foreign` (`incident_type`);
+  ADD KEY `incidents-incident-type-foreign` (`incident_type`);
+
+--
+-- Indexes for table `incident_resources`
+--
+ALTER TABLE `incident_resources`
+  ADD PRIMARY KEY (`incident_id`,`resource_id`),
+  ADD KEY `incident-resources-resource-id-foreign` (`resource_id`);
 
 --
 -- Indexes for table `incident_type`
@@ -131,10 +181,18 @@ ALTER TABLE `incident_type`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `incident_type_resources`
+--
+ALTER TABLE `incident_type_resources`
+  ADD PRIMARY KEY (`incident_type`,`resource_type`),
+  ADD KEY `incident-type-resources-resource-type-foreign` (`resource_type`);
+
+--
 -- Indexes for table `resources`
 --
 ALTER TABLE `resources`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `resources-resource-type-foreign` (`resource_type`);
 
 --
 -- Indexes for table `resource_type`
@@ -150,13 +208,13 @@ ALTER TABLE `resource_type`
 -- AUTO_INCREMENT for table `incidents`
 --
 ALTER TABLE `incidents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `incident_type`
 --
 ALTER TABLE `incident_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `resources`
@@ -168,7 +226,7 @@ ALTER TABLE `resources`
 -- AUTO_INCREMENT for table `resource_type`
 --
 ALTER TABLE `resource_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Constraints for dumped tables
@@ -178,7 +236,27 @@ ALTER TABLE `resource_type`
 -- Constraints for table `incidents`
 --
 ALTER TABLE `incidents`
-  ADD CONSTRAINT `incident-type-foreign` FOREIGN KEY (`incident_type`) REFERENCES `incident_type` (`id`);
+  ADD CONSTRAINT `incidents-incident-type-foreign` FOREIGN KEY (`incident_type`) REFERENCES `incident_type` (`id`);
+
+--
+-- Constraints for table `incident_resources`
+--
+ALTER TABLE `incident_resources`
+  ADD CONSTRAINT `incident-resources-incident-id-foreign` FOREIGN KEY (`incident_id`) REFERENCES `incidents` (`id`),
+  ADD CONSTRAINT `incident-resources-resource-id-foreign` FOREIGN KEY (`resource_id`) REFERENCES `resources` (`id`);
+
+--
+-- Constraints for table `incident_type_resources`
+--
+ALTER TABLE `incident_type_resources`
+  ADD CONSTRAINT `incident-type-resources-incident-type-foreign` FOREIGN KEY (`incident_type`) REFERENCES `incident_type` (`id`),
+  ADD CONSTRAINT `incident-type-resources-resource-type-foreign` FOREIGN KEY (`resource_type`) REFERENCES `resource_type` (`id`);
+
+--
+-- Constraints for table `resources`
+--
+ALTER TABLE `resources`
+  ADD CONSTRAINT `resources-resource-type-foreign` FOREIGN KEY (`resource_type`) REFERENCES `resource_type` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -30,7 +30,7 @@ function App() {
       radius={incident.radius}
       color={incident.color}></CircleMarker> 
     }) : "Loading"}
-c
+
 </MapContainer>
     </div>
     

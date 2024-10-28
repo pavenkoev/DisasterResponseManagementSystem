@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 
-
+// Initialize the Express app
 var app = express(express.json); 
 
 app.use(cors());
@@ -22,7 +22,7 @@ app.get('/get-data', async (request, response) => {
 
     try {
         const [incidentsResults] = await dbConnection.query(sqlIncidentsQuery);
-        const [sqlResourcesResults] = await dbConnection.query(sqlIncidentsQuery);
+        const [sqlResourcesResults] = await dbConnection.query(sqlResourcesQuery);
 
         let data = {
             incidents: incidentsResults,
@@ -81,5 +81,3 @@ app.post('/add-resource', async (request, response) => {
 app.listen(2000, () => {
     console.log("Express server is running and listening");
 }); 
-
-

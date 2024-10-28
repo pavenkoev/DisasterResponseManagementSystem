@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 26, 2024 at 04:53 AM
+-- Generation Time: Oct 28, 2024 at 01:31 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -39,20 +39,24 @@ CREATE TABLE `incidents` (
 --
 
 INSERT INTO `incidents` (`id`, `location`, `radius`, `incident_type`) VALUES
-(1, 0x000000000101000000713d0ad7a3c049400ad7a3703d0ab7bf, 20, 1),
-(2, 0x0000000001010000003d0ad7a370cd494052b81e85eb51c8bf, 30, 2),
-(3, 0x000000000101000000363ffed2a23e4740b77efacf9a8b5ec0, 15, 2),
-(4, 0x0000000001010000003be466b801b543408d7e349c329a5bc0, 25, 15),
-(25, 0x0000000001010000003735d07cce8f4440c0417bf5f1f457c0, 30, 13),
-(26, 0x0000000001010000006d003620422840405951836918f054c0, 10, 2),
-(27, 0x00000000010100000074d4d171354c41403d0b42791f5254c0, 15, 3),
-(28, 0x0000000001010000002dd159661130444038f7578ffb095fc0, 25, 5),
-(29, 0x000000000101000000a1bab9f8dbd04240bfb9bf7adc9f5dc0, 30, 1),
-(30, 0x000000000101000000b1f9b83654a043401c96067e54045ac0, 10, 14),
-(31, 0x000000000101000000f450db8651f845401f300f99f29752c0, 25, 15),
-(32, 0x000000000101000000e6eb32fca77b4a400f2a711de3bc5bc0, 20, 7),
-(33, 0x0000000001010000009fca694fc9534840c4d2c08f6aa253c0, 35, 12),
-(34, 0x000000000101000000d3bd4eeacb86354059c4b0c398bf63c0, 10, 11);
+(1, 0x000000000101000000713d0ad7a3c049400ad7a3703d0ab7bf, 2000, 1),
+(2, 0x0000000001010000003d0ad7a370cd494052b81e85eb51c8bf, 3000, 2),
+(3, 0x000000000101000000363ffed2a23e4740b77efacf9a8b5ec0, 1500, 2),
+(4, 0x0000000001010000003be466b801b543408d7e349c329a5bc0, 40000, 15),
+(25, 0x0000000001010000003735d07cce8f4440c0417bf5f1f457c0, 20000, 13),
+(26, 0x0000000001010000006d003620422840405951836918f054c0, 1000, 2),
+(27, 0x00000000010100000074d4d171354c41403d0b42791f5254c0, 1500, 3),
+(28, 0x0000000001010000002dd159661130444038f7578ffb095fc0, 25000, 5),
+(29, 0x000000000101000000a1bab9f8dbd04240bfb9bf7adc9f5dc0, 3000, 1),
+(30, 0x000000000101000000b1f9b83654a043401c96067e54045ac0, 100000, 14),
+(31, 0x000000000101000000f450db8651f845401f300f99f29752c0, 30000, 15),
+(32, 0x000000000101000000e6eb32fca77b4a400f2a711de3bc5bc0, 2000, 7),
+(33, 0x0000000001010000009fca694fc9534840c4d2c08f6aa253c0, 3500, 12),
+(34, 0x000000000101000000d3bd4eeacb86354059c4b0c398bf63c0, 1000, 11),
+(35, 0x0000000001010000001b9eeca8459e534001000000808b42c0, 5000, 2),
+(36, 0x000000000101000000b2463d44a3ff4040202922c32a1359c0, 60000, 16),
+(37, 0x00000000010100000009bf555320e846400100000040695ac0, 40000, 2),
+(39, 0x0000000001010000001600a119b5c7394001000000e0e759c0, 30000, 11);
 
 -- --------------------------------------------------------
 
@@ -83,16 +87,17 @@ CREATE TABLE `incident_type` (
 --
 
 INSERT INTO `incident_type` (`id`, `name`, `color`, `icon`) VALUES
-(1, 'Earthquake', '#b57f59', 'Icon'),
-(2, 'Fire', '#fb2e2e', 'Icon'),
-(3, 'Hurricane', '#808080', 'Icon'),
-(5, 'Flood', '#0000ff', 'Icon'),
-(7, 'Tornado', '#000000', 'Icon'),
-(11, 'Volcanic Eruption', '#ffa500', 'Icon'),
-(12, 'Land Slide', '#06402b', 'Icon'),
-(13, 'Heat Wave', '#ffff00', 'Icon'),
-(14, 'Drought', '#f5f5dc', 'Icon'),
-(15, 'Alien Invasion', '#32cd32', 'Icon');
+(1, 'Earthquake', '#b57f59', 'earthquake.png'),
+(2, 'Fire', '#fb2e2e', 'fire.png'),
+(3, 'Hurricane', '#808080', 'hurricane.png'),
+(5, 'Flood', '#0000ff', 'flood.png'),
+(7, 'Tornado', '#000000', 'tornado.png'),
+(11, 'Volcanic Eruption', '#ffa500', 'volcano.png'),
+(12, 'Land Slide', '#06402b', 'landslide.png'),
+(13, 'Heat Wave', '#ffff00', 'heat_wave.png'),
+(14, 'Nuclear Catastrophe', '#ffa500', 'nuclear.png'),
+(15, 'Alien Invasion', '#32cd32', 'alien_invasion.png'),
+(16, 'Biological Catastrophe', '#008000', 'biohazard.png');
 
 -- --------------------------------------------------------
 
@@ -121,10 +126,17 @@ INSERT INTO `incident_type_resources` (`incident_type`, `resource_type`, `quanti
 
 CREATE TABLE `resources` (
   `id` int(11) NOT NULL,
-  `location` varchar(256) NOT NULL,
+  `location` point NOT NULL,
   `resource_type` int(11) NOT NULL,
   `quantity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `resources`
+--
+
+INSERT INTO `resources` (`id`, `location`, `resource_type`, `quantity`) VALUES
+(2, 0x000000000101000000e1163edf47e0464001000000a0905ac0, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -208,19 +220,19 @@ ALTER TABLE `resource_type`
 -- AUTO_INCREMENT for table `incidents`
 --
 ALTER TABLE `incidents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `incident_type`
 --
 ALTER TABLE `incident_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `resources`
 --
 ALTER TABLE `resources`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `resource_type`

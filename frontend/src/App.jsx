@@ -82,8 +82,8 @@ function App() {
   function MapClickHandler() {
     useMapEvents({
       click(e) {
-        handleAddIncident(e);
-        //handleAddResource(e);
+        //handleAddIncident(e);
+        handleAddResource(e);
       }
     })
   }

@@ -1,16 +1,17 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react';
 import {
-  MapContainer, TileLayer, useMap, Marker, Popup, CircleMarker, Circle,
-  useMapEvents, ImageOverlay
-} from 'react-leaflet'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+  MapContainer, TileLayer, Circle, Marker,
+  useMapEvents,
+} from 'react-leaflet';
+import './App.css';
+import AddIncidentTypeForm from './Forms/AddIncidentTypeForm';
+import AddResourceTypeForm from './Forms/AddResourceTypeForm';
 
 function App() {
-  const [count, setCount] = useState(0)
   const [data, setData] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(4);
+  const [showIncidentForm, setShowIncidentForm] = useState(false); // State for incident type form visibility
+  const [showResourceForm, setShowResourceForm] = useState(false); // State for resource type form visibility
 
   useEffect(() => {
     fetch('http://localhost:2000/get-data')
@@ -18,9 +19,6 @@ function App() {
       .then(json => setData(json))
       .catch(error => console.error(error));
   }, []);
-
-
-  const [map, setMap] = useState(null)
 
   function handleAddIncident(e) {
     let latlng = e.latlng;
@@ -41,13 +39,13 @@ function App() {
         type: type
       })
     }).then(response => response.json())
-    .then(json => {
-      let newData = {
-        incidents: [...data.incidents, json[0]],
-        resources: data.resources
-      };
-      setData(newData);
-    });
+      .then(json => {
+        let newData = {
+          incidents: [...data.incidents, json[0]],
+          resources: data.resources
+        };
+        setData(newData);
+      });
   }
 
   function handleAddResource(e) {
@@ -69,75 +67,86 @@ function App() {
         type: type
       })
     }).then(response => response.json())
-    .then(json => {
-      let newData = {
-        incidents: data.incidents,
-        resources: [...data.resources, json[0]]
-      };
-      setData(newData);
-    });
+      .then(json => {
+        let newData = {
+          incidents: data.incidents,
+          resources: [...data.resources, json[0]]
+        };
+        setData(newData);
+      });
   }
 
+  const handleAddIncidentType = (newIncidentType) => {
+    console.log('New Incident Type Created:', newIncidentType);
+    // TODO: Send new incident_type to database.
+  };
+
+  const handleAddResourceType = (newResourceType) => {
+    console.log('New Resource Type Created:', newResourceType);
+    // TODO: Send new resource_type to database.
+  };
 
   function MapClickHandler() {
     useMapEvents({
       click(e) {
-        //handleAddIncident(e);
-        handleAddResource(e);
+        // Handle other click events if necessary
       }
     })
   }
 
-  function createIcon(url) {
-    var myIcon = L.icon({
-      iconUrl: url,
-      iconSize: [32, 32],
-      iconAnchor: [16, 16],
-      popupAnchor: [-3, -76],
-    });
-    return myIcon;
-  }
-
   const displayMap = useMemo(
     () => (
-      <>
-        <div >
-          <MapContainer center={[39.1, -101.3]} zoom={zoomLevel} scrollWheelZoom={false}
-            style={{ width: '1000px', height: '800px' }}
-            ref={setMap}>
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            {data ? data.incidents.map((incident) => {
-              return <Circle
-                center={[incident.location.x, incident.location.y]}
-                radius={incident.radius}
-                color={incident.color}>
-                <Marker position={[incident.location.x, incident.location.y]}
-                  icon={createIcon('http://localhost:5173/images/icons/' + incident.icon)}></Marker>
-              </Circle>
-            }) : "Loading"}
+      <MapContainer center={[39.1, -101.3]} zoom={zoomLevel} scrollWheelZoom={false}
+        style={{ width: '1000px', height: '800px' }}>
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        {data ? data.incidents.map((incident) => (
+          <Circle
+            key={incident.id} // Add a key prop if incidents have an ID
+            center={[incident.location.x, incident.location.y]}
+            radius={incident.radius}
+            color={incident.color}
+          >
+            <Marker position={[incident.location.x, incident.location.y]} />
+          </Circle>
+        )) : "Loading"}
 
-            {data ? data.resources.map((resource) => {
-              return <Marker position={[resource.location.x, resource.location.y]}
-                  icon={createIcon('http://localhost:5173/images/icons/' + resource.icon)}></Marker>
-            }) : "Loading"}
+        {data ? data.resources.map((resource) => (
+          <Marker key={resource.id} position={[resource.location.x, resource.location.y]} />
+        )) : "Loading"}
 
-            <MapClickHandler />
-
-          </MapContainer>
-        </div>
-
-      </>
+        <MapClickHandler />
+      </MapContainer>
     ),
     [data],
   )
 
-  return (<div>
-    {displayMap}
-  </div>
+  return (
+    <div>
+      {displayMap}
+{/*       {showIncidentForm && ( */}
+{/*         <AddIncidentForm */}
+{/*           location={incidentLocation} */}
+{/*           onSubmit={(newIncident) => { */}
+{/*             setData(prevData => ({ */}
+{/*               ...prevData, */}
+{/*               incidents: [...prevData.incidents, newIncident] */}
+{/*             })); */}
+{/*             setShowIncidentForm(false); */}
+{/*           }} */}
+{/*           onCancel={() => setShowIncidentForm(false)} */}
+{/*         /> */}
+{/*       )} */}
+      <button onClick={() => setShowIncidentForm(!showIncidentForm)}>
+        {showIncidentForm ? 'Hide' : 'Add New Incident Type'}
+      </button>
+      {showIncidentForm && <AddIncidentTypeForm onAddIncidentType={handleAddIncidentType} />}
 
+      <button onClick={() => setShowResourceForm(!showResourceForm)}>
+        {showResourceForm ? 'Hide' : 'Add New Resource Type'}
+      </button>
+      {showResourceForm && <AddResourceTypeForm onAddResourceType={handleAddResourceType} />}
+    </div>
   )
 }
 
-export default App
+export default App;

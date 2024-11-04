@@ -120,10 +120,10 @@ function App() {
     [data],
   )
 
+  // Some code below temporarily commented out as it clashes with the new forms.
   return (
     <div>
       {displayMap}
-      // Code below temporarily commented out as it clashes with the new forms.
 {/*       {showIncidentForm && ( */}
 {/*         <AddIncidentForm */}
 {/*           location={incidentLocation} */}

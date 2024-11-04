@@ -123,6 +123,7 @@ function App() {
   return (
     <div>
       {displayMap}
+      // Code below temporarily commented out as it clashes with the new forms.
 {/*       {showIncidentForm && ( */}
 {/*         <AddIncidentForm */}
 {/*           location={incidentLocation} */}

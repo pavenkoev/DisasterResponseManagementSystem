@@ -1,3 +1,5 @@
+// Cody Dukes
+
 import React, { useState } from 'react';
 
 const AddResourceTypeForm = ({ onAddResourceType }) => {

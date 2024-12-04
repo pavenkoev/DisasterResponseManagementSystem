@@ -10,10 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@szhsin/react-menu": "^4.2.3",
     "leaflet": "^1.9.4",
     "react": "^18.3.1",
+    "react-datepicker": "^7.5.0",
     "react-dom": "^18.3.1",
-    "react-leaflet": "^4.2.1"
+    "react-leaflet": "^4.2.1",
+    "react-router": "^7.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",

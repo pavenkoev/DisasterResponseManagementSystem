@@ -9,6 +9,7 @@ export default function Query1() {
                 <a href="department.html" className="btn btn-success btn-lg mt-3">View Connections</a>
                 <a href="project.html" className="btn btn-success btn-lg mt-3">Distance Search</a>
                 <a href="worksOn.html" className="btn btn-success btn-lg mt-3">View By Date</a>
+                <div className="my-3"></div>
         </div>
     </div>
 

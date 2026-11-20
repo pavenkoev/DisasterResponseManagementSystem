@@ -37,16 +37,28 @@ app.get('/get-data', async (req, res) => {
         return res.status(200).json(data);
     } catch (err) {
         console.error(err);
-        return res.status(400).json({ Error: err });
+        return res.status(400).json({ Error: "Request failed" });
     }
 });
 
+// Coordinates must be plain numbers before they reach SQL.
+function readPoint(location) {
+    const x = Number(location?.x);
+    const y = Number(location?.y);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+    return [x, y];
+}
+
 // Add a new incident
 app.post('/add-incident', async (req, res) => {
-    const sqlQuery = "INSERT INTO incidents (location, radius, incident_type) VALUES (ST_GeomFromText('POINT(? ?)'), ?, ?)";
+    const sqlQuery = "INSERT INTO incidents (location, radius, incident_type) VALUES (POINT(?, ?), ?, ?)";
     const selectQuery = "SELECT i.id, i.location, i.radius, i.incident_type, i.start_date, i.end_date, it.name, it.color, it.icon " +
         "FROM incidents i JOIN incident_type it ON i.incident_type = it.id WHERE i.id = ?;";
-    const values = [req.body.location.x, req.body.location.y, req.body.radius, req.body.type];
+    const point = readPoint(req.body?.location);
+    if (!point) {
+        return res.status(400).json({ Error: "location.x and location.y must be numbers" });
+    }
+    const values = [...point, req.body.radius, req.body.type];
 
     try {
         const [insertResult] = await dbConnection.query(sqlQuery, values);
@@ -55,16 +67,20 @@ app.post('/add-incident', async (req, res) => {
         return res.status(200).json(incident);
     } catch (err) {
         console.error(err);
-        return res.status(400).json({ Error: err });
+        return res.status(400).json({ Error: "Request failed" });
     }
 });
 
 // Add a new resource
 app.post('/add-resource', async (req, res) => {
-    const sqlQuery = "INSERT INTO resources (location, quantity, resource_type) VALUES (ST_GeomFromText('POINT(? ?)'), ?, ?)";
+    const sqlQuery = "INSERT INTO resources (location, quantity, resource_type) VALUES (POINT(?, ?), ?, ?)";
     const selectQuery = "SELECT r.id, r.location, r.resource_type, rt.name, rt.color, rt.icon, rt.description " +
         "FROM resources r JOIN resource_type rt ON r.resource_type = rt.id WHERE r.id = ?;";
-    const values = [req.body.location.x, req.body.location.y, req.body.quantity, req.body.type];
+    const point = readPoint(req.body?.location);
+    if (!point) {
+        return res.status(400).json({ Error: "location.x and location.y must be numbers" });
+    }
+    const values = [...point, req.body.quantity, req.body.type];
 
     try {
         const [insertResult] = await dbConnection.query(sqlQuery, values);
@@ -73,7 +89,7 @@ app.post('/add-resource', async (req, res) => {
         return res.status(200).json(resource);
     } catch (err) {
         console.error(err);
-        return res.status(400).json({ Error: err });
+        return res.status(400).json({ Error: "Request failed" });
     }
 });
 
@@ -169,7 +185,7 @@ app.post('/api/connection', async (req, res) => {
         return res.status(200).json({ Status: 'Ok' });
     } catch (err) {
         console.error(err);
-        return res.status(400).json({ Error: err });
+        return res.status(400).json({ Error: "Request failed" });
     }
 });
 
@@ -299,7 +315,7 @@ app.get('/api/incident-resource-analysis/:id', async (req, res) => {
         return res.status(200).json(data);
     } catch (err) {
         console.error(err);
-        return res.status(400).json({ Error: err });
+        return res.status(400).json({ Error: "Request failed" });
     }
 });
 
@@ -327,7 +343,7 @@ app.post('/api/entity-connection-num', async (req, res) => {
         return res.status(200).json(results);
     } catch (err) {
         console.error(err);
-        return res.status(400).json({ Error: err });
+        return res.status(400).json({ Error: "Request failed" });
     }
 });
 
@@ -353,7 +369,7 @@ app.post('/api/incident-resouces-in-radius', async (req, res) => {
         return res.status(200).json(results);
     } catch (err) {
         console.error(err);
-        return res.status(400).json({ Error: err });
+        return res.status(400).json({ Error: "Request failed" });
     }
 });
 
@@ -376,7 +392,7 @@ app.post('/api/incident-by-date', async (req, res) => {
         return res.status(200).json(results);
     } catch (err) {
         console.error(err);
-        return res.status(400).json({ Error: err });
+        return res.status(400).json({ Error: "Request failed" });
     }
 });
 
